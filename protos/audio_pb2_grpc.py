@@ -3,9 +3,9 @@
 import grpc
 import warnings
 
-import protos.audio_pb2 as audio__pb2
+from protos import audio_pb2 as protos_dot_audio__pb2
 
-GRPC_GENERATED_VERSION = '1.66.1'
+GRPC_GENERATED_VERSION = '1.67.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -18,7 +18,7 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in audio_pb2_grpc.py depends on'
+        + f' but the generated code in protos/audio_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
@@ -36,13 +36,13 @@ class AudioServiceStub(object):
         """
         self.GetAudioFile = channel.unary_unary(
                 '/audioservice.AudioService/GetAudioFile',
-                request_serializer=audio__pb2.AudioRequest.SerializeToString,
-                response_deserializer=audio__pb2.AudioResponse.FromString,
+                request_serializer=protos_dot_audio__pb2.AudioRequest.SerializeToString,
+                response_deserializer=protos_dot_audio__pb2.AudioResponse.FromString,
                 _registered_method=True)
         self.ReceiveNewsContent = channel.unary_unary(
                 '/audioservice.AudioService/ReceiveNewsContent',
-                request_serializer=audio__pb2.NewsContentRequest.SerializeToString,
-                response_deserializer=audio__pb2.NewsContentResponse.FromString,
+                request_serializer=protos_dot_audio__pb2.NewsContentRequest.SerializeToString,
+                response_deserializer=protos_dot_audio__pb2.NewsContentResponse.FromString,
                 _registered_method=True)
 
 
@@ -66,13 +66,13 @@ def add_AudioServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetAudioFile': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAudioFile,
-                    request_deserializer=audio__pb2.AudioRequest.FromString,
-                    response_serializer=audio__pb2.AudioResponse.SerializeToString,
+                    request_deserializer=protos_dot_audio__pb2.AudioRequest.FromString,
+                    response_serializer=protos_dot_audio__pb2.AudioResponse.SerializeToString,
             ),
             'ReceiveNewsContent': grpc.unary_unary_rpc_method_handler(
                     servicer.ReceiveNewsContent,
-                    request_deserializer=audio__pb2.NewsContentRequest.FromString,
-                    response_serializer=audio__pb2.NewsContentResponse.SerializeToString,
+                    request_deserializer=protos_dot_audio__pb2.NewsContentRequest.FromString,
+                    response_serializer=protos_dot_audio__pb2.NewsContentResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -100,8 +100,8 @@ class AudioService(object):
             request,
             target,
             '/audioservice.AudioService/GetAudioFile',
-            audio__pb2.AudioRequest.SerializeToString,
-            audio__pb2.AudioResponse.FromString,
+            protos_dot_audio__pb2.AudioRequest.SerializeToString,
+            protos_dot_audio__pb2.AudioResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -127,8 +127,8 @@ class AudioService(object):
             request,
             target,
             '/audioservice.AudioService/ReceiveNewsContent',
-            audio__pb2.NewsContentRequest.SerializeToString,
-            audio__pb2.NewsContentResponse.FromString,
+            protos_dot_audio__pb2.NewsContentRequest.SerializeToString,
+            protos_dot_audio__pb2.NewsContentResponse.FromString,
             options,
             channel_credentials,
             insecure,

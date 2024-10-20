@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package audioservice;
 
+option go_package = "github.com/yourusername/gateway/internal/proto";
 service AudioService {
   rpc GetAudioFile (AudioRequest) returns (AudioResponse) {}
   rpc ReceiveNewsContent (NewsContentRequest) returns (NewsContentResponse) {}
