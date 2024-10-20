@@ -33,13 +33,21 @@ class AudioService(audio_pb2_grpc.AudioServiceServicer):
         print('request:', request)
         print('news_id:', request.news_id)
         print('type(news_id):', type(request.news_id))
-        audio_data, file_name = self.db.get_audio_file(request.news_id)
-        print('file_name:', file_name)
+        audio_data = self.db.get_audio_file_from_url(request.news_id)
+        if audio_data:
+            return audio_pb2.AudioResponse(audio_data=audio_data)
+        else:
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details(f"Audio file for news_id '{request.news_id}' not found")
+            return audio_pb2.AudioResponse()
+        
+    def GetAudioFileFromURL(self, request, context):
+        audio_data, file_name = self.db.get_audio_file_from_url(request.url)
         if audio_data:
             return audio_pb2.AudioResponse(audio_data=audio_data, file_name=file_name)
         else:
             context.set_code(grpc.StatusCode.NOT_FOUND)
-            context.set_details(f"Audio file for news_id '{request.news_id}' not found")
+            context.set_details(f"Audio file for url '{request.url}' not found")
             return audio_pb2.AudioResponse()
 
 def serve():
