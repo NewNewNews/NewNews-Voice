@@ -43,62 +43,25 @@ class AudioService(audio_pb2_grpc.AudioServiceServicer):
         )
 
     def GetAudioFile(self, request, context):
-        print("request:", request)
-        print("news_id:", request.news_id)
-        print("type(news_id):", type(request.news_id))
-        audio_data, file_name = self.db.get_audio_file(request.news_id)
-        print("file_name:", file_name)
+        print('request:', request)
+        print('news_id:', request.news_id)
+        print('type(news_id):', type(request.news_id))
+        audio_data = self.db.get_audio_file_from_url(request.news_id)
         if audio_data:
-            return audio_pb2.AudioResponse(audio_data=audio_data, file_name=file_name)
+            return audio_pb2.AudioResponse(audio_data=audio_data)
         else:
             context.set_code(grpc.StatusCode.NOT_FOUND)
             context.set_details(f"Audio file for news_id '{request.news_id}' not found")
             return audio_pb2.AudioResponse()
-
-
-def kafka_consumer_thread(audio_service):
-    protobuf_deserializer = ProtobufDeserializer(
-        news_message_pb2.NewsMessage, conf={"use.deprecated.format": True}
-    )
-    string_deserializer = StringDeserializer("utf_8")
-
-    consumer_conf = {
-        "bootstrap.servers": "localhost:9092",
-        "group.id": "news_group",
-        "auto.offset.reset": "earliest",
-    }
-
-    consumer = Consumer(consumer_conf)
-    consumer.subscribe(["news_topic"])
-
-    try:
-        while True:
-            msg = consumer.poll(1.0)
-            if msg is None:
-                continue
-
-            if msg.error():
-                if msg.error().code() == KafkaError._PARTITION_EOF:
-                    continue
-                else:
-                    print(msg.error())
-                    break
-
-            key = string_deserializer(
-                msg.key(), SerializationContext(msg.topic(), MessageField.KEY)
-            )
-            news_message = protobuf_deserializer(
-                msg.value(), SerializationContext(msg.topic(), MessageField.VALUE)
-            )
-
-            if news_message is not None:
-                print(f"Consumed record with key {key}: {news_message}")
-                # Here you would typically call a method on audio_service to process the news message
-                # For example:
-                # audio_service.process_news(news_message)
-    finally:
-        consumer.close()
-
+        
+    def GetAudioFileFromURL(self, request, context):
+        audio_data, file_name = self.db.get_audio_file_from_url(request.url)
+        if audio_data:
+            return audio_pb2.AudioResponse(audio_data=audio_data, file_name=file_name)
+        else:
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details(f"Audio file for url '{request.url}' not found")
+            return audio_pb2.AudioResponse()
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

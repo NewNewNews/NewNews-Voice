@@ -12,7 +12,13 @@ class AudioDatabase:
         if file:
             return file.read(), file.filename
         return None, None
+    
+    def get_audio_file_from_url(self, url):
+        file = self.fs.find_one({"url": url})
+        if file:
+            return file.read()
+        return None
 
-    def save_audio_file(self, news_id, audio_data):
+    def save_audio_file(self, news_id, audio_data, url=""):
         filename = f"{news_id}.mp3"
-        self.fs.put(audio_data, filename=filename, news_id=news_id)
+        self.fs.put(audio_data, filename=filename, news_id=news_id, url=url)
