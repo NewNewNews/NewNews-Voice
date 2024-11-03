@@ -1,0 +1,22 @@
+.venv
+*venv
+# Ignore unnecessary file
+*.log
+*.lock
+.DS_Store
+*.pypackage
+*.egg-info
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+instance
+.mypy_cache
+.tox
+.nox
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.egg
+*.py[co]
+__pycache__
