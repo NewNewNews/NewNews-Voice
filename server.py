@@ -67,6 +67,6 @@ if __name__ == '__main__':
     for file in db.fs.find():
         print(file.filename)
         
-    print(db.fs.find_one({"news_id": "1"}).filename)
-    print(db.get_audio_file("1")[1])
+    # print(db.fs.find_one({"news_id": "1"}).filename)
+    # print(db.get_audio_file("1")[1])
     serve()
