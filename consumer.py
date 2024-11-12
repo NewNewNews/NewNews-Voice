@@ -20,8 +20,8 @@ def create_audio_file(url, content):
     tts.save(file_name)
     with open(file_name, "rb") as f:
         audio_data = f.read()
-    import random
-    db.save_audio_file(random.randint(1, 1000), audio_data, url)
+    import uuid
+    db.save_audio_file(str(uuid.uuid4()), audio_data, url)
     print('audio file created and saved for url:', url)
     os.remove(file_name)
     return
